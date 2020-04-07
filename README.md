@@ -46,5 +46,9 @@ https://developer.android.com/studio/test/command-line
 
 Report will be stored in `./app/build/reports/` directory.
 
+## Setup
+See [this document](https://github.com/logigear-japan/uitest_sample_android/blob/master/documents/github_circleci_sonarcloud.pdf) for more information and details. (in Japanese only)
+
+
 # Lisence
 Apache License Version 2.0
