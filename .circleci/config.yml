@@ -1,4 +1,8 @@
 version: 2
+
+orbs:
+ android: circleci/android@0.2.0
+
 jobs:
   build:
     working_directory: ~/code
@@ -46,54 +50,3 @@ jobs:
       - store_artifacts:
           path: ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
           destination: /apks/app-debug-androidTest.apk
-      # >> [See more device info with this command] $ gcloud firebase test android models list;
-      # >> [Aboud CLI] https://firebase.google.com/docs/test-lab/android/command-line
-      # !!!!! NOTICE !!!!!
-      # MUST UPDATE Environment Variables
-      # GCLOUD_SERVICE_KEY: base64 encoded key file of JSON format vriables
-      # GOOGLE_PROJECT_ID: Cloud Testing API'ID
-      # API REQUIRED TO BE ACTIVATED: Cloud Testing API, Cloud Tool Results API
-      - run:
-          name: Store Google Service Account
-          command: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
-      - run:
-          name: Authorize gcloud and set config defaults
-          command: |
-            cat ${HOME}/gcloud-service-key.json
-            sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-      - run:
-          name: Set object name of result file in GCP Bucket
-          command: echo export BK_OBJ_NAME=`date +%Y%m%d_%H%M%S`_`date +%s | base64 | sed "s/=$//g"`  >> $BASH_ENV
-      - run:
-          name: Test with Firebase Test Lab
-          command: >
-            sudo gcloud firebase test android run \
-              --type instrumentation \
-              --app ./app/build/outputs/apk/debug/app-debug.apk \
-              --test ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
-              --test-targets "class com.example.uitestsample.MainActivityInstrumentedTest" \
-              --results-dir $BK_OBJ_NAME \
-              --results-bucket cloud-test-${GOOGLE_PROJECT_ID} \
-              --directories-to-pull /sdcard/uitest/ \
-              --device model=Pixel2,version=26,locale=en_US,orientation=portrait \
-              --use-orchestrator \
-              --timeout 120s
-      #--environment-variables coverage=true,coverageFile=/sdcard/coverage.ec \
-      - run:
-          name: Install gsutil dependency and copy test results data
-          command: |
-            mkdir -p reports/UiTest
-            sudo pip install -U crcmod
-            sudo gsutil -m cp -r -U gs://cloud-test-${GOOGLE_PROJECT_ID}/${BK_OBJ_NAME} reports/UiTest | true
-      - store_artifacts:
-          path: reports/UiTest
-          destination: reports/tests/UiTest
-      - run:
-          name: Upload to DeployGate
-          command: |
-            APK_PATH=app/build/outputs/apk/debug/app-debug.apk
-            TIME=$(date "+%Y/%m/%d %H:%M")
-            COMMIT_HASH=$(git log --format="%H" -n 1 | cut -c 1-8)
-            USERNAME=ryoyakawai
-            curl -F "file=@${APK_PATH}" -F "token=${DEPLOYGATE_API_KEY}" -F "message=Build by CircleCI <${COMMIT_HASH}> (${TIME})" https://deploygate.com/api/users/${USERNAME}/apps
