@@ -3,18 +3,17 @@ package com.example.uitestsample
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import android.util.Log
-import com.example.uitestsample.api.response.SinglePostResponse
-
-import kotlinx.android.synthetic.main.activity_main.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.example.uitestsample.api.response.SinglePostResponse
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), MainActivityViewContract {
 
@@ -33,6 +32,8 @@ class MainActivity : AppCompatActivity(), MainActivityViewContract {
         this.mPresenter!!.setView(this)
 
         setContentView(R.layout.activity_main)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar)
 
         updateMainContentText("Hello World!!")

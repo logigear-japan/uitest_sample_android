@@ -1,18 +1,21 @@
 package com.example.uitestsample
 
 import android.view.View
-import android.support.test.InstrumentationRegistry
-import android.support.test.filters.LargeTest
-import android.support.test.filters.SdkSuppress
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.NoMatchingViewException
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.*
-import android.support.test.rule.ActivityTestRule
-import android.support.test.rule.GrantPermissionRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.*
+
+
+import androidx.test.filters.LargeTest
+import androidx.test.filters.SdkSuppress
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.assertion.ViewAssertions.matches
 
 import com.example.uitestsample.uitestutils.ScreenshotTakingRule
 import com.example.uitestsample.uitestutils.UiTestUtils
@@ -25,13 +28,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.regex.Pattern.matches
 
 /**
  * Instrumented test, which will execute on an Android device.
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 @SdkSuppress(minSdkVersion = 26)
 @LargeTest
 class MainActivityInstrumentedTest {
@@ -115,7 +119,7 @@ class MainActivityInstrumentedTest {
             assertEquals("[Counter SEQ] 🍏🍎", i.toString(), actualCount)
 
             // Wait for snack bar disappears
-            val snackBarTapped = allOf(withId(android.support.design.R.id.snackbar_text), withText("Tapped $i times."))
+            val snackBarTapped = allOf(withId(R.id.snackbar_text), withText("Tapped $i times."))
             waitForSnackbarDisappear(snackBarTapped)
             this.mUTs.sleep("SHR")
         }
@@ -146,7 +150,8 @@ class MainActivityInstrumentedTest {
             try {
                 onView(targetMatcher).check(matches(isDisplayed()))
                 this.mUTs.sleep("SHR")
-            } catch(e: NoMatchingViewException) {
+            } catch (e: NoMatchingViewException) {
+
                 this.mUTs.log_e("This error is telling test runner that there are no snackbar on screen.")
                 doLoop = false
             }

@@ -3,21 +3,22 @@ package com.example.uitestsample.uitestutils
 import android.app.Activity
 import android.os.Build
 import android.os.Environment
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.UiController
-import android.support.test.espresso.ViewAction
-import android.support.test.espresso.action.ViewActions
-import android.support.test.espresso.matcher.ViewMatchers
-import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiObjectNotFoundException
-import android.support.test.uiautomator.UiSelector
+
+import androidx.test.espresso.Espresso
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObjectNotFoundException
+import androidx.test.uiautomator.UiSelector
 
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.platform.app.InstrumentationRegistry
 
 import org.hamcrest.Description
 import org.hamcrest.Matcher
